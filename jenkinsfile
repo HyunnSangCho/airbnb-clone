@@ -1,0 +1,35 @@
+pipeline {
+    agent {
+        kubernetes{
+            label 'airbnb-clone'
+            defaultContainer 'jnlp'
+            yaml """
+apiVersion: v1
+kind: Pod
+metadata:
+labels:
+  component: ci
+spec:
+  serviceAccountName: jenkins
+  containers:
+  - name: python
+    image: python
+    command:
+    - cat
+    tty: true
+"""
+        }
+    }
+    stages {
+        stage('Test'){
+            steps{
+                container('python'){
+                    sh """
+                    test = "hi"
+                    echo $test
+                    """
+                }
+            }
+        }
+    }
+}
